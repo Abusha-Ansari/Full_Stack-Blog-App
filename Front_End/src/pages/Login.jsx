@@ -12,7 +12,6 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     try {
-      // console.log('fetching');
       const response = await fetch('http://localhost:1234/login', {
         method: 'POST',
         headers: {
@@ -20,17 +19,26 @@ const Login = () => {
         },
         body: JSON.stringify(data)
       });
+  
+     
+      if (!response.ok) {
+        
+        window.alert('Login failed: Invalid email or password');
+        return;
+      }
+  
       const responseData = await response.json();
-      localStorage.setItem('token',responseData.token)
-      // console.log(responseData.token);
+
+      localStorage.setItem('token', responseData.token);
       setloggedIn(true);
-      window.alert('Login Succesfull');
+      window.alert('Login Successful');
       navigate('/');
+  
     } catch (error) {
+      console.error('Login error:', error);
+      window.alert('An error occurred during login.');
       navigate('/login');
-      window.alert('Login: ', error);
     }
-    
   };
 
   const togglePasswordVisibility = () => {

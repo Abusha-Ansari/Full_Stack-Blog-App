@@ -1,20 +1,25 @@
 const dbSchema = require("../Schema/registerSchema");
+const blogData = require("../Schema/blogSchema")
 const bcrypt = require("bcrypt");
 
 const home = (req, res) => {
   return res.status(200).send("hello welcome bro");
 };
 
+
+// Display All Blogs From Backend
 const blog_db = async (req, res) => {
   try {
-    const data = await dbSchema.find();
+    const data = await blogData.find();
     res.status(200).send(data);
   } catch (error) {
-    console.error("Test failed", error);
-    res.status(500).json({ message: "Failed to fetch data" });
+    res.status(500).json({ message: "Failed to fetch blogs" });
   }
 };
 
+
+
+// User Registeration
 const register = async (req, res) => {
   try {
     const userData = req.body;
@@ -31,11 +36,12 @@ const register = async (req, res) => {
   }
 };
 
+
+// User Login
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const ExistingUser = await dbSchema.findOne({ email });
-    // console.log(ExistingUser)
     if (ExistingUser) {
       const decryptedPass = await bcrypt.compare(
         password,
@@ -51,7 +57,6 @@ const login = async (req, res) => {
         res.status(401).send({ message: "invalid Username or Password" });
       }
     } else {
-      // console.log("user not found");
       res.status(401).send({ message: "user not found" });
     }
   } catch (error) {
@@ -60,4 +65,76 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { home, register, login, blog_db };
+
+
+// Verify JWT and send its data
+const user = async (req, res) => {
+  try {
+    const data = req.user;
+    res.status(200).send(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+
+// Add blogs to Database
+const addBlog = async (req,res) => {
+  try {
+    const blog = req.body;
+    const newBlog = new blogData(blog);
+    await newBlog.save();
+    res.status(200).send("Blog added to the database");
+  } catch (error) {
+    res.status(400).send({message: error.message})
+  }
+}
+
+
+// Edit blog 
+const editBlog = async (req, res) => {
+
+  const { id } = req.params;
+  const { title, body } = req.body;
+
+  try {
+    const updatedBlog = await blogData.findByIdAndUpdate(
+      id,
+      { title, body },
+      { new: true, runValidators: true } 
+    );
+    
+    if (!updatedBlog) {
+      return res.status(404).json({ message: "Blog post not found" });
+    }
+
+    res.status(200).json(updatedBlog); 
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update blog", error: error.message });
+  }
+}
+
+
+// Delete blog
+const deleteBlog = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const blog = await blogData.findByIdAndDelete(id);
+
+    if (!blog) {
+      return res.status(404).json({ message: "Blog not found" });
+    }
+
+
+    res.status(200).json({ message: "Blog deleted successfully" });
+  } catch (error) {
+
+    res.status(500).json({ message: "Failed to delete blog", error: error.message });
+  }
+};
+
+
+
+module.exports = { home, register, login, blog_db, user , addBlog , editBlog , deleteBlog };

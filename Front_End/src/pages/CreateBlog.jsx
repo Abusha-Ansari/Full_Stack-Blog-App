@@ -1,30 +1,49 @@
 import React, { useContext, useState } from "react";
-import {BlogContext} from '../Context/UserContext.jsx'
-function CreateBlog() {
+import { useNavigate } from "react-router-dom";
 
-  const {Blogs,setBlogs} = useContext(BlogContext);
+function CreateBlog() {
   const [newTitle, setNewTitle] = useState("");
   const [newBody, setNewBody] = useState("");
+  const navigate = useNavigate();
 
-  const handleAddBlog = (e) => {
+  const handleAddBlog = async (e) => {
     e.preventDefault();
 
     const newBlog = {
-      time: new Date().toLocaleString('en-US', { 
-        year: 'numeric', 
-        month: '2-digit', 
-        day: '2-digit', 
-        hour: '2-digit', 
-        minute: '2-digit', 
-        second: '2-digit', 
-        hour12: false 
-      }), 
+      time: new Date().toLocaleString("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      }),
       title: newTitle,
       body: newBody,
       id: Date.now(),
     };
-    
-    setBlogs([...Blogs, newBlog]);
+
+    try {
+      const response = await fetch("http://localhost:1234/addblog", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newBlog),
+      });
+
+      if (response.ok) {
+        window.alert("Blog Added Successfully");
+        navigate("/create-blog");
+      } else {
+        const errorData = await response.json();
+        window.alert(`Registration failed: ${errorData.message}`);
+      }
+    } catch (error) {
+      window.alert(`Registration failed: ${error.message}`);
+    }
+
     setNewTitle("");
     setNewBody("");
   };

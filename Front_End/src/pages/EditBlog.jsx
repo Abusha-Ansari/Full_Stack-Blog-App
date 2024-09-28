@@ -1,20 +1,51 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import {BlogContext} from '../Context/UserContext.jsx';
+import { BlogContext } from '../Context/UserContext.jsx';
+
+
 
 function EditBlog() {
-  const {Blogs,setBlogs} = useContext(BlogContext)
-  const { id } = useParams();
+  const { Blogs, setBlogs } = useContext(BlogContext);
+  const { id } = useParams(); 
   const navigate = useNavigate();
 
   const [blog, setBlog] = useState({ title: "", body: "" });
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState("");
+
 
   useEffect(() => {
-    const currentBlog = Blogs.find(blog => blog.id === parseInt(id));
+    const currentBlog = Blogs.find(blog => blog._id === id); 
     if (currentBlog) {
       setBlog(currentBlog);
+      setLoading(false);
+    } else {
+      setError("Blog not found");
+      setLoading(false);
     }
   }, [id, Blogs]);
+
+
+  const updateBlog = async (id, updatedData) => {
+    try {
+      const response = await fetch(`http://localhost:1234/editblog/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to update blog: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      window.alert("Error updating blog:", error.message);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,14 +55,29 @@ function EditBlog() {
     }));
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    const updatedBlogs = Blogs.map(item =>
-      item.id === blog.id ? blog : item
-    );
-    setBlogs(updatedBlogs);
-    navigate("/all-blog");
+
+    const updatedBlog = await updateBlog(id, blog);
+
+    if (updatedBlog) {
+      const updatedBlogs = Blogs.map(item =>
+        item._id === id ? updatedBlog : item
+      );
+      setBlogs(updatedBlogs);
+      navigate("/all-blog");
+    } else {
+      window.alert("Error updating blog");
+    }
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div className="w-full flex justify-center items-center min-h-screen bg-blue-50 p-4">

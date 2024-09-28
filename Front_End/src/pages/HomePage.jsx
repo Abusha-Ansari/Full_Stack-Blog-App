@@ -9,6 +9,27 @@ function HomePage() {
   const [recentBlogs,setrecentBlogs] = useState([]);
 
   useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const response = await fetch("http://localhost:1234/blogdata", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json(); 
+        setBlogs(data); 
+  
+      } catch (error) {
+        console.log('fail')
+        window.alert(`Fetching blogs failed: ${error.message}`);
+      }
+    };
+
+    fetchBlogs(); 
+  }, []);
+
+  useEffect(() => {
     AOS.init({ duration: 1000 });
 
     if (Blogs.length > 0) {
@@ -17,6 +38,8 @@ function HomePage() {
     }
 
   }, [Blogs]);
+
+
 
   
   return (
