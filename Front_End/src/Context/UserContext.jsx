@@ -12,7 +12,7 @@ export const BlogProvider = ({ children }) => {
         }
     });
 
-    const [loggedIn,setloggedIn] = useState(true);
+    const [loggedIn,setloggedIn] = useState(false);
 
     const Logout = () => {
         setloggedIn(false)

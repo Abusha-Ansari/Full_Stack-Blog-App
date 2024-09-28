@@ -9,12 +9,32 @@ const Signup = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+
+
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  const onSubmit = (data) => {
-    console.log(data);
-    navigate("/login");
+  const onSubmit = async (data) => {
+    // console.log(data);
+    try {
+      const response = await fetch('http://localhost:1234/register', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+  
+      if (response.ok) { 
+        window.alert("Registered Successfully");
+        navigate("/login");  
+      } else {
+        const errorData = await response.json();
+        window.alert(`Registration failed: ${errorData.message}`);
+      }
+    } catch (error) {
+      window.alert(`Registration failed: ${error.message}`);
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -28,7 +48,7 @@ const Signup = () => {
           Sign Up
         </h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Username */}
+  
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Username
@@ -43,7 +63,7 @@ const Signup = () => {
             )}
           </div>
 
-          {/* Email */}
+ 
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Email
@@ -64,7 +84,7 @@ const Signup = () => {
             )}
           </div>
 
-          {/* Password */}
+      
           <div className="relative">
             <label className="block text-sm font-medium text-gray-700">
               Password
@@ -92,7 +112,7 @@ const Signup = () => {
             )}
           </div>
 
-          {/* Phone Number */}
+        
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Phone Number
@@ -127,7 +147,7 @@ const Signup = () => {
             )}
           </div>
 
-          {/* Gender */}
+    
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Gender
@@ -166,7 +186,6 @@ const Signup = () => {
             )}
           </div>
 
-          {/* Signup Button */}
           <button
             type="submit"
             className="w-full py-2 px-4 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"

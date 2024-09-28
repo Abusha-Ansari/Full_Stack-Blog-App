@@ -10,11 +10,27 @@ const Login = () => {
   const navigate = useNavigate(); 
   const {loggedIn,setloggedIn} = useContext(BlogContext);
 
-  const onSubmit = (data) => {
-    console.log(data);
-    setloggedIn(true)
-    navigate('/');
-    // Handle login logic here
+  const onSubmit = async (data) => {
+    try {
+      // console.log('fetching');
+      const response = await fetch('http://localhost:1234/login', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+      });
+      const responseData = await response.json();
+      localStorage.setItem('token',responseData.token)
+      // console.log(responseData.token);
+      setloggedIn(true);
+      window.alert('Login Succesfull');
+      navigate('/');
+    } catch (error) {
+      navigate('/login');
+      window.alert('Login: ', error);
+    }
+    
   };
 
   const togglePasswordVisibility = () => {
@@ -26,7 +42,7 @@ const Login = () => {
       <div className="bg-white p-6 md:p-8 lg:p-10 rounded-lg shadow-lg w-full max-w-lg mx-4">
         <h2 className="text-2xl font-bold text-blue-600 mb-6 text-center">Login</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Email */}
+    
           <div>
             <label className="block text-sm font-medium text-gray-700">Email</label>
             <input
@@ -36,7 +52,7 @@ const Login = () => {
             />
           </div>
 
-          {/* Password */}
+    
           <div className="relative">
             <label className="block text-sm font-medium text-gray-700">Password</label>
             <input
@@ -53,7 +69,7 @@ const Login = () => {
             </button>
           </div>
 
-          {/* Login Button */}
+   
           <button
             type="submit"
             className="w-full py-2 px-4 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
