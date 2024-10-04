@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { BlogContext } from "../Context/UserContext.jsx";
+import YourBlogs from "../pages/YourBlogs.jsx";
 
 function Navbar() {
-  const { Blogs, setBlogs, loggedIn } = useContext(BlogContext);
-  const [userdata, setuserdata] = useState({})
+  const { loggedIn, setloggedIn, userdata, setuserdata } =
+    useContext(BlogContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -25,15 +26,16 @@ function Navbar() {
         });
 
         if (!response.ok) {
-          // console.log("error");
         }
 
         const data = await response.json();
-        setuserdata(data)
-        // return data;
-      } catch (error) {
-        // console.error("Failed to fetch user data:", error);
-      }
+
+        setuserdata(data);
+
+        if (!userdata) {
+          setloggedIn(false);
+        }
+      } catch (error) {}
     };
 
     fetchUserData();
@@ -46,7 +48,9 @@ function Navbar() {
   return (
     <div className="bg-blue-500 w-screen p-4 shadow-md">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <div className="text-white text-2xl font-bold">{loggedIn? (`Welcome ${userdata.username}!!`):(`Welcome User`)}</div>
+        <div className="text-white text-2xl font-bold">
+          {loggedIn ? `Welcome ${userdata.username}!!` : `Welcome User`}
+        </div>
 
         <div className="flex space-x-6 text-white text-lg">
           <div className="hidden md:flex space-x-6">
@@ -70,16 +74,34 @@ function Navbar() {
             >
               All Blogs
             </NavLink>
-            <NavLink
-              className={({ isActive }) =>
-                `${
-                  isActive ? "text-black font-semibold" : ""
-                } hover:text-blue-300`
-              }
-              to="/create-blog"
-            >
-              Write a Blog
-            </NavLink>
+            {loggedIn ? (
+              <NavLink
+                className={({ isActive }) =>
+                  `${
+                    isActive ? "text-black font-semibold" : ""
+                  } hover:text-blue-300`
+                }
+                to="/yourblog"
+              >
+                Your Blogs
+              </NavLink>
+            ) : (
+              ""
+            )}
+            {loggedIn ? (
+              <NavLink
+                className={({ isActive }) =>
+                  `${
+                    isActive ? "text-black font-semibold" : ""
+                  } hover:text-blue-300`
+                }
+                to="/create-blog"
+              >
+                Write a Blog
+              </NavLink>
+            ) : (
+              ""
+            )}
             <NavLink
               className={({ isActive }) =>
                 `${
@@ -105,7 +127,6 @@ function Navbar() {
               </>
             )}
           </div>
-
           <div className="md:hidden text-white text-xl">
             <button onClick={handleMenuToggle} className="focus:outline-none">
               {isMenuOpen ? "✖" : "☰"}
@@ -138,17 +159,34 @@ function Navbar() {
           >
             All Blogs
           </NavLink>
-          <NavLink
-            className={({ isActive }) =>
-              `${
-                isActive ? "text-black font-semibold" : ""
-              } hover:text-blue-300`
-            }
-            to="/create-blog"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            Create Blog
-          </NavLink>
+          {loggedIn ? (
+            <>
+              <NavLink
+                className={({ isActive }) =>
+                  `${
+                    isActive ? "text-black font-semibold" : ""
+                  } hover:text-blue-300`
+                }
+                to="/yourblog"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Your Blogs
+              </NavLink>
+              <NavLink
+                className={({ isActive }) =>
+                  `${
+                    isActive ? "text-black font-semibold" : ""
+                  } hover:text-blue-300`
+                }
+                to="/create-blog"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Create Blog
+              </NavLink>
+            </>
+          ) : (
+            ""
+          )}
           <NavLink
             className={({ isActive }) =>
               `${

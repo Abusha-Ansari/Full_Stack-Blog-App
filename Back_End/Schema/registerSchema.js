@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+require('dotenv').config()
 
 const registerSchema = new mongoose.Schema({
   username: {
@@ -33,7 +33,6 @@ const registerSchema = new mongoose.Schema({
 
 registerSchema.pre("save", async function (next) {
   try {
-    // console.log(`THIS VALUE: ${this}`)
     const data = this;
     if (!data.isModified("password")) {
       next();
@@ -48,7 +47,6 @@ registerSchema.pre("save", async function (next) {
 
 
 registerSchema.methods.genJWTtoken = async function () {
-  const key = "blogdatatoken";
   try {
     return jwt.sign(
       
@@ -60,7 +58,7 @@ registerSchema.methods.genJWTtoken = async function () {
         gender: this.gender,
         isAdmin: this.isAdmin,
       },
-      key,
+      process.env.JWT_TOKEN,
       {
         expiresIn: "1d",
       }

@@ -1,10 +1,8 @@
-import React, { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext, useEffect } from "react";
 import { BlogContext } from "../Context/UserContext.jsx";
 
 function AllBlog() {
   const { Blogs, setBlogs } = useContext(BlogContext);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -15,70 +13,43 @@ function AllBlog() {
             "Content-Type": "application/json",
           },
         });
-        const data = await response.json(); 
-        setBlogs(data); 
-  
+        const data = await response.json();
+        setBlogs(data);
       } catch (error) {
-        console.log('fail')
+        console.log("fail");
         window.alert(`Fetching blogs failed: ${error.message}`);
       }
     };
 
-    fetchBlogs(); 
+    fetchBlogs();
   }, []);
-
-
-  const handleDelete = async (id) => {
-    try {
-      const response = await fetch(`http://localhost:1234/delete/${id}`, {
-        method: "DELETE",
-      });
-      if (response.ok) {
-        const newBlogs = Blogs.filter((currItem) => currItem._id !== id);
-        setBlogs(newBlogs);
-      } else {
-        console.error("Failed to delete blog.");
-      }
-    } catch (error) {
-      console.error("Error deleting blog:", error);
-    }
-  };
-
-  // Function to handle editing a blog
-  const handleEdit = (id) => {
-    navigate(`/edit-blog/${id}`);
-  };
 
   return (
     <>
       {Blogs && Blogs.length > 0 ? (
         <ul className="w-[100%] min-h-screen max-h-auto flex flex-row flex-wrap gap-4 justify-center items-center">
           {Blogs.map((currBlog) => {
-            const { title, body, _id } = currBlog;
+            const { title, body, _id , user} = currBlog;
 
             return (
-              <li key={_id}>
-                <div className="h-[350px] w-[300px] m-[2rem] bg-blue-50 border border-blue-300 rounded-lg shadow-md p-4 hover:cursor-pointer hover:shadow-lg transform transition-all duration-300 relative">
-                  <div className="flex-grow h-[250px] overflow-y-scroll no-scrollbar">
+              <li key={_id} className="w-full md:w-1/2 lg:w-1/3 xl:w-1/4 p-4">
+                <div className="h-[400px] w-full bg-blue-50 border border-blue-300 rounded-lg shadow-md p-4 hover:cursor-pointer hover:shadow-lg transform transition-all duration-300 relative">
+
+                  <div className="h-[150px] w-full bg-gray-200 rounded-lg mb-4 flex items-center justify-center">
+                    <p className="text-gray-500">Image goes here</p>
+                  </div>
+
+                  <div className="flex-grow h-[150px] overflow-y-scroll no-scrollbar">
                     <p className="text-blue-900 font-bold text-lg mb-2">
                       Title: {title}
+                    </p>
+                    <p className="text-blue-900 font-bold text-lg mb-2">
+                      Writer: {user}
                     </p>
                     <p className="text-gray-700 text-sm">Desc: {body}</p>
                   </div>
 
                   <div className="absolute bottom-0 left-0 right-0 flex justify-between p-2">
-                    <button
-                      onClick={() => handleDelete(_id)}
-                      className="h-[40px] w-[45%] bg-red-100 hover:bg-red-300 text-red-700 font-medium rounded-md transition-colors duration-200"
-                    >
-                      Delete Blog
-                    </button>
-                    <button
-                      onClick={() => handleEdit(_id)}
-                      className="h-[40px] w-[45%] bg-blue-100 hover:bg-blue-300 text-blue-700 font-medium rounded-md transition-colors duration-200"
-                    >
-                      Edit Blog
-                    </button>
                   </div>
                 </div>
               </li>

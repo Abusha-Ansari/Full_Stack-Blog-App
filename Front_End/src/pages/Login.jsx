@@ -8,7 +8,7 @@ const Login = () => {
   const { register, handleSubmit } = useForm();
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate(); 
-  const {loggedIn,setloggedIn} = useContext(BlogContext);
+  const {setloggedIn} = useContext(BlogContext);
 
   const onSubmit = async (data) => {
     try {

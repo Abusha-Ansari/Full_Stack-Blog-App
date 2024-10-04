@@ -18,6 +18,19 @@ const blog_db = async (req, res) => {
 };
 
 
+// Display  Blogs From Specific User From Backend
+const user_blog = async (req, res) => {
+  const { user } = req.params;
+  const username = user;
+  try {
+    const data = await blogData.find({ user: username }); 
+    res.status(200).send(data);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch blogs" });
+  }
+};
+
+
 
 // User Registeration
 const register = async (req, res) => {
@@ -137,4 +150,4 @@ const deleteBlog = async (req, res) => {
 
 
 
-module.exports = { home, register, login, blog_db, user , addBlog , editBlog , deleteBlog };
+module.exports = { home, register, login, blog_db, user , addBlog , editBlog , deleteBlog , user_blog };

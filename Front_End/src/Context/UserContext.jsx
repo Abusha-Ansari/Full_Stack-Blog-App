@@ -1,9 +1,13 @@
 import { createContext, useState, useEffect } from "react";
 export const BlogContext = createContext();
 
-export const BlogProvider = ({ children }) => {
-    const [Blogs, setBlogs] = useState([]);
+export const BlogProvider = ({children}) => {
 
+    const [Blogs, setBlogs] = useState([]);
+    const [personalBlogs, setpersonalBlogs] = useState([])
+    const [userdata, setuserdata] = useState({})
+    const [Userdatafetching,setUserdatafetching] = useState(false);
+    
     useEffect(() => {
         const fetchBlogs = async () => {
           try {
@@ -32,7 +36,7 @@ export const BlogProvider = ({ children }) => {
     }
 
     return (
-        <BlogContext.Provider value={{ Blogs, setBlogs , Logout , loggedIn , setloggedIn}}>
+        <BlogContext.Provider value={{ Blogs, setBlogs , Logout , loggedIn , setloggedIn , userdata , setuserdata , personalBlogs , setpersonalBlogs}}>
             {children}
         </BlogContext.Provider>
     );

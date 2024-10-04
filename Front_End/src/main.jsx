@@ -1,4 +1,3 @@
-import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom'
@@ -11,6 +10,8 @@ import Layout from './Layout.jsx'
 import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
 import Logout from './pages/Logout.jsx'
+import { BlogProvider } from './Context/UserContext.jsx'
+import YourBlogs from './pages/YourBlogs.jsx'
 
 
 const router = createBrowserRouter([
@@ -23,14 +24,17 @@ const router = createBrowserRouter([
       {path: "/about" , element: <About/>},
       {path: "/login" , element: <Login/>},
       {path: "/signup" , element: <Signup/>},
-      {path: "/logout" , element: <Logout/>}
+      {path: "/logout" , element: <Logout/>},
+      {path: "/yourblog" , element: <YourBlogs/>}
     ]
   }
 ]);
 
 createRoot(document.getElementById('root')).render(
   
-
-    <RouterProvider router={router}/>
+  <BlogProvider>
+  <RouterProvider router={router}/>
+  </BlogProvider>
+  
  
 )

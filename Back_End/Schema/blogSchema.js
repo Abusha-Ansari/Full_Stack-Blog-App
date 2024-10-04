@@ -17,6 +17,10 @@ const blogSchema = new mongoose.Schema({
     type: String,
     require: true,
   },
+  user: {
+    type: String,
+    require: true,
+  },
 });
 
 const blogData = new mongoose.model("Blogs", blogSchema);

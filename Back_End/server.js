@@ -1,6 +1,6 @@
 const ConnectDB = require('./blogDB');
 const express = require('express');
-const { home, register, blog_db, login, user, addBlog, editBlog, deleteBlog } = require('./Controllers/routesController');
+const { home, register, blog_db, login, user, addBlog, editBlog, deleteBlog, user_blog } = require('./Controllers/routesController');
 const authMiddleware = require('./Middlewears/Auth-Middlewear');
 const app = express();
 
@@ -19,6 +19,7 @@ app.use(cors(corsOptions))
 
 app.route("/").get(home);
 app.route("/blogdata").get(blog_db);
+app.route("/userblog/:user").get(user_blog);
 app.route("/user").get(authMiddleware,user);
 
 

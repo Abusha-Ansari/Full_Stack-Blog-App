@@ -1,9 +1,12 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BlogContext } from "../Context/UserContext";
 
 function CreateBlog() {
+
   const [newTitle, setNewTitle] = useState("");
   const [newBody, setNewBody] = useState("");
+  const { userdata } = useContext(BlogContext);
   const navigate = useNavigate();
 
   const handleAddBlog = async (e) => {
@@ -22,6 +25,7 @@ function CreateBlog() {
       title: newTitle,
       body: newBody,
       id: Date.now(),
+      user: userdata.username
     };
 
     try {

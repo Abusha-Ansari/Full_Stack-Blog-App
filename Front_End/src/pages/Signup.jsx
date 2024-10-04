@@ -15,7 +15,6 @@ const Signup = () => {
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
-    // console.log(data);
     try {
       const response = await fetch('http://localhost:1234/register', {
         method: 'POST',
