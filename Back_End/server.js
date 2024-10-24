@@ -10,7 +10,7 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
 var corsOptions = {
-    origin: 'http://localhost:5173',
+    origin: process.env.FRONTEND_ORIGIN,
     methods: "GET, PUT, PATCH, DELETE, POST, HEAD",
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],

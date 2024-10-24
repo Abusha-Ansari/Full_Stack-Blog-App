@@ -60,7 +60,7 @@ registerSchema.methods.genJWTtoken = async function () {
       },
       process.env.JWT_TOKEN,
       {
-        expiresIn: "1d",
+        expiresIn: "30d",
       }
     );
   } catch (error) {

@@ -4,42 +4,8 @@ import { BlogContext } from "../Context/UserContext.jsx";
 import YourBlogs from "../pages/YourBlogs.jsx";
 
 function Navbar() {
-  const { loggedIn, setloggedIn, userdata, setuserdata } =
-    useContext(BlogContext);
+  const { loggedIn, setloggedIn, userdata, setuserdata } = useContext(BlogContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-          throw new Error("No token found. Please log in.");
-        }
-
-        const response = await fetch("http://localhost:1234/user", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-        }
-
-        const data = await response.json();
-
-        setuserdata(data);
-
-        if (!userdata) {
-          setloggedIn(false);
-        }
-      } catch (error) {}
-    };
-
-    fetchUserData();
-  }, [loggedIn]);
 
   const handleMenuToggle = () => {
     setIsMenuOpen(!isMenuOpen);

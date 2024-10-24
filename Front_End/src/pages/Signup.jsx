@@ -16,7 +16,7 @@ const Signup = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await fetch('http://localhost:1234/register', {
+      const response = await fetch(import.meta.env.VITE_USER_REGISTER, {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",

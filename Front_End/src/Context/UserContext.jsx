@@ -6,12 +6,45 @@ export const BlogProvider = ({children}) => {
     const [Blogs, setBlogs] = useState([]);
     const [personalBlogs, setpersonalBlogs] = useState([])
     const [userdata, setuserdata] = useState({})
-    const [Userdatafetching,setUserdatafetching] = useState(false);
+    const [loggedIn,setloggedIn] = useState(localStorage.getItem('token')? true:false);
+
+    useEffect(() => {
+      const fetchUserData = async () => {
+        try {
+          const token = localStorage.getItem("token");
+  
+          if (!token) {
+            throw new Error("No token found. Please log in.");
+          }
+
+          const response = await fetch(import.meta.env.VITE_FETCH_USER_TOKEN_URL, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
+  
+          if (!response.ok) {
+          }
+  
+          const data = await response.json();
+  
+          setuserdata(data);
+  
+          if (!userdata) {
+            setloggedIn(false);
+          }
+        } catch (error) {}
+      };
+  
+      fetchUserData();
+    }, [loggedIn]);
     
     useEffect(() => {
         const fetchBlogs = async () => {
           try {
-            const response = await fetch("http://localhost:1234/blogdata", {
+            const response = await fetch(import.meta.env.VITE_FETCH_BLOG_DATA, {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
@@ -28,7 +61,7 @@ export const BlogProvider = ({children}) => {
         fetchBlogs(); 
       }, []);
 
-    const [loggedIn,setloggedIn] = useState(localStorage.getItem('token')? true:false);
+
 
     const Logout = () => {
         localStorage.removeItem('token')

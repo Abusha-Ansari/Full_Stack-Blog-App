@@ -7,7 +7,7 @@ function AllBlog() {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await fetch("http://localhost:1234/blogdata", {
+        const response = await fetch(import.meta.env.VITE_FETCH_BLOG_DATA, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
